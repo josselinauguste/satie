@@ -1,6 +1,11 @@
 module Main where
 
+import           System.Random                  ( newStdGen )
+import           Euterpea                       ( play )
+
 import           Composer
 
 main :: IO ()
-main = playNewComposition
+main = do
+  gen <- newStdGen
+  play $ generateComposition gen

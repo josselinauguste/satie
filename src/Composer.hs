@@ -1,23 +1,16 @@
 module Composer
-    ( playNewComposition
+    ( generateComposition
     )
 where
 
-import           Euterpea
+import           Euterpea.Music
 import           System.Random                  ( random
                                                 , StdGen
-                                                , newStdGen
                                                 )
 
 import           Markov                         ( TransitionMatrix
                                                 , next
                                                 )
-
-playNewComposition :: IO ()
-playNewComposition = do
-    gen <- newStdGen
-    play $ generateComposition gen
-    return ()
 
 generateComposition :: StdGen -> Music Pitch
 generateComposition gen =
