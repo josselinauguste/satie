@@ -13,12 +13,10 @@ import           Markov                         ( TransitionMatrix
                                                 )
 
 generateComposition :: StdGen -> Music Pitch
-generateComposition gen =
-    line $ take duration $ map (note sn . (\n -> (n, 3)) . fst) $ iterate
-        generateNextPitch
-        (C, gen)
+generateComposition gen = line $ map (note sn . (\n -> (n, 3)) . fst) $ iterate
+    generateNextPitch
+    (C, gen)
   where
-    duration = 16
     generateNextPitch :: (PitchClass, StdGen) -> (PitchClass, StdGen)
     generateNextPitch (fromPitch, currentGen) =
         let (choice, nextGen) = random currentGen :: (Float, StdGen)
