@@ -1,5 +1,8 @@
+{-# LANGUAGE TupleSections #-}
+
 module Composer
     ( generateComposition
+    , Algorithm(..)
     )
 where
 
@@ -12,10 +15,12 @@ import           Markov                         ( TransitionMatrix
                                                 , next
                                                 )
 
-generateComposition :: StdGen -> Music Pitch
-generateComposition gen = line $ map (note sn . (\n -> (n, 3)) . fst) $ iterate
-    generateNextPitch
-    (C, gen)
+data Algorithm = MarkovChain (TransitionMatrix PitchClass, StdGen)
+
+generateComposition :: Algorithm -> Music Pitch
+generateComposition (MarkovChain (matrix, gen)) =
+    line $ map (note sn . (, 3) . fst) $ iterate generateNextPitch
+                                                          (C, gen)
   where
     generateNextPitch :: (PitchClass, StdGen) -> (PitchClass, StdGen)
     generateNextPitch (fromPitch, currentGen) =
@@ -24,13 +29,3 @@ generateComposition gen = line $ map (note sn . (\n -> (n, 3)) . fst) $ iterate
         in  case nextPitch of
                 Just actualPitch -> (actualPitch, nextGen)
                 Nothing          -> (C, nextGen)
-
-matrix :: TransitionMatrix PitchClass
-matrix =
-    [ (C, [(C, 0.33), (G, 0.67)])
-    , (D, [(C, 0.5), (D, 0.25), (G, 0.25)])
-    , (E, [(D, 0.375), (E, 0.625)])
-    , (F, [(E, 0.5), (F, 0.5)])
-    , (G, [(F, 0.6), (G, 0.4)])
-    , (A, [(G, 0.5), (A, 0.5)])
-    ]
