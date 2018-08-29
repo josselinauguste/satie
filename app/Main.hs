@@ -11,12 +11,12 @@ main = do
   gen <- newStdGen
   play $ generateComposition $ MarkovChain (defaultMatrix, gen)
 
-defaultMatrix :: TransitionMatrix PitchClass
+defaultMatrix :: TransitionMatrix Pitch
 defaultMatrix =
-  [ (C, [(C, 0.33), (G, 0.67)])
-  , (D, [(C, 0.5), (D, 0.25), (G, 0.25)])
-  , (E, [(D, 0.375), (E, 0.625)])
-  , (F, [(E, 0.5), (F, 0.5)])
-  , (G, [(F, 0.6), (G, 0.4)])
-  , (A, [(G, 0.5), (A, 0.5)])
+  [ ((C, 3), [((C, 3), 0.33), ((G, 3), 0.67)])
+  , ((D, 3), [((C, 3), 0.5), ((D, 3), 0.25), ((G, 3), 0.25)])
+  , ((E, 3), [((D, 3), 0.375), ((E, 3), 0.625)])
+  , ((F, 3), [((E, 3), 0.5), ((F, 3), 0.5)])
+  , ((G, 3), [((F, 3), 0.6), ((G, 3), 0.4)])
+  , ((A, 3), [((G, 3), 0.5), ((A, 3), 0.5)])
   ]

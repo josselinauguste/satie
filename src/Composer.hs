@@ -1,5 +1,3 @@
-{-# LANGUAGE TupleSections #-}
-
 module Composer
     ( generateComposition
     , Algorithm(..)
@@ -17,18 +15,18 @@ import           Markov                         ( TransitionMatrix
                                                 )
 
 data Algorithm = Random StdGen
-               | MarkovChain (TransitionMatrix PitchClass, StdGen)
+               | MarkovChain (TransitionMatrix Pitch, StdGen)
 
 generateComposition :: Algorithm -> Music Pitch
 generateComposition (Random gen) =
     line $ map (note sn . pitch) $ randomRs (30, 80) gen
 generateComposition (MarkovChain (matrix, gen)) =
-    line $ map (note sn . (, 3) . fst) $ iterate generateNextPitch (C, gen)
+    line $ map (note sn . fst) $ iterate generateNextPitch ((C, 3), gen)
   where
-    generateNextPitch :: (PitchClass, StdGen) -> (PitchClass, StdGen)
+    generateNextPitch :: (Pitch, StdGen) -> (Pitch, StdGen)
     generateNextPitch (fromPitch, currentGen) =
         let (choice, nextGen) = random currentGen :: (Float, StdGen)
             nextPitch         = next matrix fromPitch choice
         in  case nextPitch of
                 Just actualPitch -> (actualPitch, nextGen)
-                Nothing          -> (C, nextGen)
+                Nothing          -> ((C, 1), nextGen)
