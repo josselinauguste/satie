@@ -26,6 +26,15 @@ main = hspec $ do
       next matrix 'a' 0.25 `shouldBe` Just 'b'
       next matrix 'a' 0.75 `shouldBe` Just 'c'
 
+    describe "generating a transition matrix from content analysis" $ do
+      it "gets the matrix for the simplest possible content" $ do
+        let expectedMatrix = [('a', [('a', 1)])]
+        analyse "aa" `shouldBe` expectedMatrix
+
+      it "gets the matrix for a 50/50 content" $ do
+        let expectedMatrix = [('a', [('a', 0.5), ('b', 0.5)])]
+        analyse "aab" `shouldBe` expectedMatrix
+
   describe "composer" $ do
     describe "using random generator"
       $             it "generates a suite of notes"
