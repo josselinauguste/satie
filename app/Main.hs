@@ -1,22 +1,34 @@
+{-# LANGUAGE TupleSections #-}
+
 module Main where
 
-import           System.Random                  ( newStdGen )
-import           Euterpea
+import           System.Random                  ( newStdGen
+                                                , StdGen
+                                                )
+import           System.Environment             ( getArgs )
+import qualified Text.XML                      as X
+                                                ( readFile
+                                                , def
+                                                )
+import           Euterpea                       ( play )
+import           Euterpea.Extra                 ( lineToPitches )
+import           Data.Maybe                     ( maybe )
 
-import           Markov                         ( TransitionMatrix )
+import           Markov                         ( analyse )
 import           Composer
+import           MusicXML                       ( fromXML
+                                                , toMusic
+                                                , MusicXML
+                                                )
 
 main :: IO ()
 main = do
-  gen <- newStdGen
-  play $ generateComposition $ MarkovChain (defaultMatrix, gen)
+  args <- getArgs
+  let musicXMLFile = head args
+  musicXMLDocument <- X.readFile X.def musicXMLFile
+  gen              <- newStdGen
+  play $ generateComposition $ markovChain (fromXML musicXMLDocument) gen
 
-defaultMatrix :: TransitionMatrix Pitch
-defaultMatrix =
-  [ ((C, 3), [((C, 3), 0.33), ((G, 3), 0.67)])
-  , ((D, 3), [((C, 3), 0.5), ((D, 3), 0.25), ((G, 3), 0.25)])
-  , ((E, 3), [((D, 3), 0.375), ((E, 3), 0.625)])
-  , ((F, 3), [((E, 3), 0.5), ((F, 3), 0.5)])
-  , ((G, 3), [((F, 3), 0.6), ((G, 3), 0.4)])
-  , ((A, 3), [((G, 3), 0.5), ((A, 3), 0.5)])
-  ]
+markovChain :: MusicXML -> StdGen -> Algorithm
+markovChain m gen = MarkovChain $ (, gen) transitionMatrix
+  where transitionMatrix = analyse $ maybe [] lineToPitches (toMusic m)
