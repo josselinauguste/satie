@@ -25,7 +25,8 @@ select choice probabilities =
 analyse :: Eq a => [a] -> TransitionMatrix a
 analyse content = map
     (\(f, ts) ->
-        let tsLength = fromIntegral $ length ts
+        let tsLength = fromIntegral $ sum $ snd <$> ts
+            -- let tsLength = fromIntegral $ length ts
         in  (f, map (\(t, c) -> (t, fromIntegral c / tsLength)) ts)
     )
     transitions

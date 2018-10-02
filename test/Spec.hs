@@ -35,6 +35,11 @@ main = hspec $ do
         let expectedMatrix = [('a', [('a', 0.5), ('b', 0.5)])]
         analyse "aab" `shouldBe` expectedMatrix
 
+      it "gets the matrix for a more complex content" $ do
+        let expectedMatrix =
+              [('a', [('c', 1.0)]), ('c', [('c', 0.25), ('a', 0.75)])]
+        analyse "ccacaca" `shouldBe` expectedMatrix
+
   describe "composer" $ do
     describe "using random generator"
       $             it "generates a suite of notes"
